@@ -5,8 +5,17 @@ async function getAllContacts() {
         const contacts = await Contact.find({});
         return contacts;
     } catch (error) {
-        console.log(error);
+        console.error("Error while fetching contacts:", error);
     }
 }
 
-export {getAllContacts};
+async function getContactById(contactId) {
+    try {
+        const contact = await Contact.findById(contactId);
+        return contact;
+    } catch (error) {
+        console.error(`Error while fetching contact with id ${contactId}:`, error);
+    }
+}
+
+export { getAllContacts, getContactById };
