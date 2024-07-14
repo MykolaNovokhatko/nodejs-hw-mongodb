@@ -5,8 +5,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 async function initMongoConnection() {
-
-    const DB_URI = process.env.DB_URI;
+    const { MONGODB_USER, MONGODB_PASSWORD, MONGODB_URL, MONGODB_DB } = process.env;
+    const DB_URI = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_URL}/${MONGODB_DB}?retryWrites=true&w=majority`;
 
   try {
     // console.log({DB_URI});
