@@ -4,6 +4,8 @@ import cors from 'cors';
 import pinoHttp from 'pino-http';
 import pino from 'pino';
 import contactsRouter from './routes/contacts.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const logger = pino();
 const pinoMiddlewar = pinoHttp({ logger });
