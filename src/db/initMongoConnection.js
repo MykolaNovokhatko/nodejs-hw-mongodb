@@ -5,6 +5,12 @@ dotenv.config();
 
 async function initMongoConnection() {
   const { MONGODB_USER, MONGODB_PASSWORD, MONGODB_URL, MONGODB_DB } = process.env;
+  
+  if (!MONGODB_USER || !MONGODB_PASSWORD || !MONGODB_URL || !MONGODB_DB) {
+    console.error('Missing MongoDB environment variables.');
+    process.exit(1);
+  }
+
   const DB_URI = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_URL}/${MONGODB_DB}?retryWrites=true&w=majority`;
 
   try {
@@ -20,4 +26,3 @@ async function initMongoConnection() {
 }
 
 export { initMongoConnection };
-
