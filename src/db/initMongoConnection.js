@@ -12,8 +12,8 @@ async function initMongoConnection() {
     await mongoose.connect(DB_URI);
     console.log('Mongo connection successfully established!');
   } catch (error) {
-    console.log(error);
-    throw error;
+    console.error(error);
+    process.exit(1);
   }
 }
 
