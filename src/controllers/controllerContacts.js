@@ -1,14 +1,11 @@
-import { getAllContacts, getContactById } from '../services/contacts.js';
+import { getAllContacts, getContactById, createContact as createNewContact, updateContact, deleteContact } from '../services/contacts.js';
+import createError from 'http-errors';
 
 async function getContacts(req, res) {
   try {
     const contacts = await getAllContacts();
     if (!contacts || contacts.length === 0) {
-      return res.status(404).json({
-        status: 'error',
-        message: 'Contacts not found',
-        data: [],
-      });
+     throw createError(404, 'Contacts not found');
     }
     res.status(200).json({
       status: 'success',
@@ -16,10 +13,9 @@ async function getContacts(req, res) {
       data: contacts,
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(error.status || 500).json({
       status: 'error',
-      message: 'Failed to retrieve contacts!',
-      data: error.message,
+      message: error.message,
     });
   }
 }
@@ -29,10 +25,7 @@ async function getContactByIdController(req, res) {
   try {
     const contact = await getContactById(contactId);
     if (!contact) {
-      return res.status(404).json({
-        status: 'error',
-        message: `Contact not found with id ${contactId}`,
-      });
+      throw createError(404, 'Contact not found');
     }
     res.status(200).json({
       status: 'success',
@@ -40,12 +33,63 @@ async function getContactByIdController(req, res) {
       data: contact,
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(error.status || 500).json({
       status: 'error',
-      message: 'Failed to retrieve contact',
-      data: error.message,
+      message: error.message,
     });
   }
 }
 
-export { getContacts, getContactByIdController };
+async function createContactController(req, res) {
+  try {
+    const newContact = await createNewContact(req.body);
+    res.status(201).json({
+      status: 'success',
+      message: 'Successfully created a contact!',
+      data: newContact,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message,
+    });
+  }
+}
+
+async function updateContactController(req, res) {
+  const { contactId } = req.params;
+  try {
+    const updatedContact = await updateContact(contactId, req.body);
+    if (!updatedContact) {
+      throw createError(404, 'Contact not found');
+    }
+    res.status(200).json({
+      status: 'success',
+      message: 'Successfully patched a contact!',
+      data: updatedContact,
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      status: 'error',
+      message: error.message,
+    });
+  }
+}
+
+async function deleteContactController(req, res) {
+  const { contactId } = req.params;
+  try {
+    const deletedContact = await deleteContact(contactId);
+    if (!deletedContact) {
+      throw createError(404, 'Contact not found');
+    }
+    res.status(204).end();
+  } catch (error) {
+    res.status(error.status || 500).json({
+      status: 'error',
+      message: error.message,
+    });
+  }
+}
+
+export { getContacts, getContactByIdController, createContactController, updateContactController, deleteContactController };
