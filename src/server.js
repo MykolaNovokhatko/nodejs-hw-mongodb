@@ -6,6 +6,8 @@ import pino from 'pino';
 import contactsRouter from './routes/contacts.js';
 import dotenv from 'dotenv';
 dotenv.config();
+import notFoundHandler from './middlewares/notFoundHandler.js';
+import errorHandler from './middlewares/errorHandler.js';
 
 const logger = pino();
 const pinoMiddlewar = pinoHttp({ logger });
@@ -20,6 +22,10 @@ export default function setupServer() {
   app.use(pinoMiddlewar);
 
   app.use('/contacts', contactsRouter);
+
+  app.use(notFoundHandler);
+
+  app.use(errorHandler);
 
   app.use((req, res, next) => {
     res.status(404).json({ message: 'Not found' });
