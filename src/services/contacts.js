@@ -1,9 +1,24 @@
 import Contact from '../models/contact.js';
 
-async function getAllContacts() {
+async function getAllContacts({ page, perPage, sortBy, sortOrder }) {
   try {
-    const contacts = await Contact.find({});
-    return contacts;
+    const skip = (page - 1) * perPage;
+    const totalItems = await Contact.countDocuments();
+    const totalPages = Math.ceil(totalItems / perPage);
+    const contacts = await Contact.find({})
+      .sort({ [sortBy]: sortOrder })
+      .skip(skip)
+      .limit(Number(perPage));
+
+    return {
+      data: contacts,
+      page: Number(page),
+      perPage: Number(perPage),
+      totalItems,
+      totalPages,
+      hasPreviousPage: page > 1,
+      hasNextPage: page < totalPages,
+    };
   } catch (error) {
     console.error('Error while fetching contacts:', error);
     throw error;

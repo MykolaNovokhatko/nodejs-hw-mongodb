@@ -8,9 +8,11 @@ import {
 import createError from 'http-errors';
 
 async function getContacts(req, res) {
+  const { page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc' } = req.query;
+
   try {
-    const contacts = await getAllContacts();
-    if (!contacts || contacts.length === 0) {
+    const contacts = await getAllContacts({ page, perPage, sortBy, sortOrder });
+    if (!contacts.data || contacts.data.length === 0) {
       throw createError(404, 'Contacts not found');
     }
     res.status(200).json({
