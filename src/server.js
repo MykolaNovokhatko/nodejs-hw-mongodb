@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
+import authRouter from './routes/auth.js';
 
 const logger = pino();
 const pinoMiddlewar = pinoHttp({ logger });
@@ -20,6 +21,8 @@ export default function setupServer() {
   app.use(express.json());
 
   app.use(pinoMiddlewar);
+
+  app.use('/auth', authRouter);
 
   app.use('/contacts', contactsRouter);
 

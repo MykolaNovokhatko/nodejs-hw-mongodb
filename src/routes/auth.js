@@ -5,7 +5,7 @@ import {
   refreshController,
   logoutController,
 } from '../controllers/auth.js';
-import { ctrlWrapper } from '../utils/ctrlWrapper';
+import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 
 const router = express.Router();
 

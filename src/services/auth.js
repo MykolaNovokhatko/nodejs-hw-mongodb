@@ -1,7 +1,7 @@
-import User from '../models/user';
+import User from '../models/user.js';
 import createError from 'http-errors';
 import jwt from 'jsonwebtoken';
-import Session from '../models/session';
+import Session from '../models/session.js';
 
 // Крок 3: Створення роута POST /auth/register. Створення сервісу.
 
