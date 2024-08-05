@@ -6,18 +6,22 @@ import Session from '../models/session.js';
 // Крок 3: Створення роута POST /auth/register. Створення сервісу.
 
 export const register = async ({ name, email, password }) => {
-  const existingUser = await User.findOne({ email });
-
-  if (existingUser) {
-    throw createError(409, 'Email in use');
-  }
-
-  const user = new User({ name, email, password });
-
-  await user.save();
-
-  return user;
-};
+    console.log(`Attempting to register user with email: ${email}`);
+    
+    const existingUser = await User.findOne({ email });
+  
+    if (existingUser) {
+      console.log(`User with email ${email} already exists.`);
+      throw createError(409, 'Email in use');
+    }
+  
+    const user = new User({ name, email, password });
+  
+    await user.save();
+  
+    console.log(`User with email ${email} successfully registered.`);
+    return user;
+  };
 
 // Крок 4: Створення роута POST /auth/login. Створення сервісу.
 
