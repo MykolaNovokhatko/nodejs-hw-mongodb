@@ -9,6 +9,7 @@ dotenv.config();
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
 import authRouter from './routes/auth.js';
+import cookieParser from 'cookie-parser';
 
 const logger = pino();
 const pinoMiddlewar = pinoHttp({ logger });
@@ -19,6 +20,8 @@ export default function setupServer() {
   app.use(cors());
 
   app.use(express.json());
+
+  app.use(cookieParser());
 
   app.use(pinoMiddlewar);
 
