@@ -1,40 +1,40 @@
 import Contact from '../models/contact.js';
 
-async function getAllContacts() {
+const getAllContacts = async (userId) => {
   try {
-    const contacts = await Contact.find({});
+    const contacts = await Contact.find({ userId });
     return contacts;
   } catch (error) {
     console.error('Error while fetching contacts:', error);
     throw error;
   }
-}
+};
 
-async function getContactById(contactId) {
+const getContactById = async (contactId, userId) => {
   try {
-    const contact = await Contact.findById(contactId);
+    const contact = await Contact.findOne({ _id: contactId, userId });
     return contact;
   } catch (error) {
     console.error(`Error while fetching contact with id ${contactId}:`, error);
     throw error;
   }
-}
+};
 
-async function createContact(contactData) {
+const createContact = async (contactData, userId) => {
   try {
-    const newContact = new Contact(contactData);
+    const newContact = new Contact({ ...contactData, userId });
     await newContact.save();
     return newContact;
   } catch (error) {
     console.error('Error while creating a new contact:', error);
     throw error;
   }
-}
+};
 
-async function updateContact(contactId, contactData) {
+const updateContact = async (contactId, contactData, userId) => {
   try {
-    const updatedContact = await Contact.findByIdAndUpdate(
-      contactId,
+    const updatedContact = await Contact.findOneAndUpdate(
+      { _id: contactId, userId },
       contactData,
       { new: true },
     );
@@ -43,17 +43,20 @@ async function updateContact(contactId, contactData) {
     console.error(`Error while updating contact with id ${contactId}:`, error);
     throw error;
   }
-}
+};
 
-async function deleteContact(contactId) {
+const deleteContact = async (contactId, userId) => {
   try {
-    const deletedContact = await Contact.findByIdAndDelete(contactId);
+    const deletedContact = await Contact.findOneAndDelete({
+      _id: contactId,
+      userId,
+    });
     return deletedContact;
   } catch (error) {
     console.error(`Error while deleting contact with id ${contactId}:`, error);
     throw error;
   }
-}
+};
 
 export {
   getAllContacts,
