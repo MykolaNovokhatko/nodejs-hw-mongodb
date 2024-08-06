@@ -11,6 +11,8 @@ import authenticate from '../middlewares/authenticate.js';
 
 const router = express.Router();
 
+// router.use(authenticate);
+
 router.get('/', authenticate, ctrlWrapper(getContacts));
 router.get('/:contactId', authenticate, ctrlWrapper(getContactByIdController));
 router.post('/', authenticate, ctrlWrapper(createContactController));

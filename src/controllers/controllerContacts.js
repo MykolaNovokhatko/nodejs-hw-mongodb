@@ -47,8 +47,11 @@ async function getContactByIdController(req, res) {
 }
 
 async function createContactController(req, res) {
+  const { name, phoneNumber } = req.body;
+  const userId = req.user._id;
+
   try {
-    const newContact = await createNewContact(req.body);
+    const newContact = await createNewContact({ name, phoneNumber }, userId);
     const contactObject = newContact.toObject();
     delete contactObject.__v;
 
