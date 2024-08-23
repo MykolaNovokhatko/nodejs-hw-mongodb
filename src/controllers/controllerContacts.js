@@ -9,14 +9,22 @@ import createError from 'http-errors';
 
 async function getContacts(req, res) {
   try {
-    const contacts = await getAllContacts();
+    const { page = 1, limit = 10 } = req.query;
+    const userId = req.user._id;
+    const contacts = await getAllContacts(userId, { page, limit });
+
     if (!contacts || contacts.length === 0) {
       throw createError(404, 'Contacts not found');
     }
+
     res.status(200).json({
       status: 200,
       message: 'Successfully found contacts!',
-      data: contacts,
+      data: {
+        contacts,
+        page: Number(page),
+        limit: Number(limit),
+      },
     });
   } catch (error) {
     res.status(error.status || 500).json({
@@ -47,11 +55,11 @@ async function getContactByIdController(req, res) {
 }
 
 async function createContactController(req, res) {
-  const { name, phoneNumber } = req.body;
+  const { name, phoneNumber, ...otherData } = req.body;
   const userId = req.user._id;
 
   try {
-    const newContact = await createNewContact({ name, phoneNumber }, userId);
+    const newContact = await createNewContact({ name, phoneNumber, ...otherData }, userId);
     const contactObject = newContact.toObject();
     delete contactObject.__v;
 

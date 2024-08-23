@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import createError from 'http-errors';
 import User from '../models/user.js';
+import Session from '../models/session.js';
 
 const authenticate = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -15,9 +16,10 @@ const authenticate = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findById(decoded.userId);
+    const session = await Session.findOne({ accessToken: token });
 
-    if (!user) {
-      return next(createError(401, 'User not found'));
+    if (!user || !session) {
+      return next(createError(401, 'Invalid token'));
     }
 
     req.user = user;
